@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:team_quest/configs/color/color.dart';
+import 'package:team_quest/view_model/auth/auth_view_model.dart';
+
+class InputRepeatPasswordWidget extends StatelessWidget {
+  InputRepeatPasswordWidget({Key? key, required this.focusNode})
+      : super(key: key);
+
+  final FocusNode focusNode;
+  final ValueNotifier<bool> _obSecurePassword = ValueNotifier<bool>(true);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AuthViewModel>(builder: (context, provider, child) {
+      return ValueListenableBuilder(
+          valueListenable: _obSecurePassword,
+          builder: (context, value, child) {
+            return TextFormField(
+              obscureText: _obSecurePassword.value,
+              focusNode: focusNode,
+              obscuringCharacter: "*",
+              decoration: InputDecoration(
+                hintText: '******************',
+                hintStyle: const TextStyle(fontSize: 14),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                suffixIcon: InkWell(
+                    onTap: () {
+                      _obSecurePassword.value = !_obSecurePassword.value;
+                    },
+                    child: Icon(_obSecurePassword.value
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility)),
+              ),
+              onChanged: (value) {
+                provider.setConfirmPassword(value);
+              },
+            );
+          });
+    });
+  }
+}
